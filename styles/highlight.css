@@ -1,0 +1,49 @@
+/* EthiScan Live Webpage Highlighting CSS */
+
+mark.ethiscan-highlight {
+  padding: 2px 4px;
+  border-radius: 3px;
+  cursor: pointer;
+  transition: background-color 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+  position: relative;
+  font-weight: inherit;
+  display: inline;
+}
+
+mark.ethiscan-highlight.ethiscan-severity-high {
+  background-color: rgba(239, 68, 68, 0.25) !important;
+  border-bottom: 2px solid #dc2626 !important;
+  color: inherit !important;
+}
+
+mark.ethiscan-highlight.ethiscan-severity-high:hover {
+  background-color: rgba(239, 68, 68, 0.4) !important;
+  box-shadow: 0 0 8px rgba(220, 38, 38, 0.4);
+}
+
+mark.ethiscan-highlight.ethiscan-severity-medium {
+  background-color: rgba(245, 158, 11, 0.25) !important;
+  border-bottom: 2px solid #d97706 !important;
+  color: inherit !important;
+}
+
+mark.ethiscan-highlight.ethiscan-severity-medium:hover {
+  background-color: rgba(245, 158, 11, 0.4) !important;
+  box-shadow: 0 0 8px rgba(217, 119, 6, 0.4);
+}
+
+mark.ethiscan-highlight.ethiscan-active {
+  outline: 2px solid #2563eb !important;
+  outline-offset: 2px;
+}
+
+/* Shadow Container Host Element */
+#ethiscan-shadow-host {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 0;
+  height: 0;
+  z-index: 2147483647 !important;
+  pointer-events: none;
+}

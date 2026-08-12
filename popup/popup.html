@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>EthiScan Shield Dashboard</title>
+  <link rel="stylesheet" href="popup.css">
+</head>
+<body class="theme-light">
+  <div class="app-container">
+    <!-- Header -->
+    <header class="app-header">
+      <div class="brand">
+        <svg class="brand-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+          <path d="m9 12 2 2 4-4"/>
+        </svg>
+        <span class="brand-title">EthiScan</span>
+      </div>
+      <div class="header-controls">
+        <button id="theme-toggle" class="icon-btn" title="Toggle Light/Dark Theme" aria-label="Toggle Theme">
+          <svg id="theme-icon-sun" class="theme-icon hidden" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="5"/>
+            <line x1="12" y1="1" x2="12" y2="3"/>
+            <line x1="12" y1="21" x2="12" y2="23"/>
+            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/>
+            <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/>
+            <line x1="1" y1="12" x2="3" y2="12"/>
+            <line x1="21" y1="12" x2="23" y2="12"/>
+            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/>
+            <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
+          </svg>
+          <svg id="theme-icon-moon" class="theme-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+          </svg>
+        </button>
+        <button id="settings-toggle" class="icon-btn" title="API Key Settings" aria-label="Settings">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="3"/>
+            <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+          </svg>
+        </button>
+      </div>
+    </header>
+
+    <!-- Dedicated Full-View Settings Panel (Hidden by default) -->
+    <div id="settings-panel" class="settings-panel hidden">
+      <div class="panel-header">
+        <span class="panel-title">Settings & API Configuration</span>
+        <button id="close-settings" class="close-btn">&times;</button>
+      </div>
+      <div class="form-group">
+        <label for="gemini-key">Google Gemini API Key</label>
+        <input type="password" id="gemini-key" placeholder="Enter Gemini API key (AIzaSy...)" autocomplete="off">
+        <span class="form-hint">Connect your Gemini API key to enable live AI analysis on custom websites.</span>
+      </div>
+      <button id="save-settings" class="btn primary-btn full-width">Save Settings</button>
+    </div>
+
+    <!-- Main Content Area -->
+    <main id="main-content" class="main-content">
+      <!-- Domain Bar -->
+      <div class="domain-bar">
+        <span id="active-domain" class="domain-name">Scanning domain...</span>
+        <span id="scan-status" class="status-pill idle">Idle</span>
+      </div>
+
+      <!-- Trust Grade Hero Card -->
+      <section class="hero-card">
+        <div class="grade-badge-container">
+          <div id="grade-badge" class="grade-badge grade-pending">--</div>
+        </div>
+        <div class="score-details">
+          <div class="score-row">
+            <span class="score-label">Trust Score</span>
+            <span id="trust-score" class="score-value">-- / 100</span>
+          </div>
+          <div class="progress-track">
+            <div id="score-bar" class="progress-bar" style="width: 0%;"></div>
+          </div>
+          <span class="grade-subtitle">Global Privacy Safety Grade</span>
+        </div>
+      </section>
+
+      <!-- Executive Summary Card -->
+      <section class="summary-card">
+        <div class="summary-header">
+          <span class="summary-title">Executive Summary</span>
+        </div>
+        <p id="executive-summary-text" class="summary-text">
+          Evaluating terms... Click 'Re-Scan Current Page' to generate a 3-4 line plain English overview of this site's privacy terms.
+        </p>
+      </section>
+
+      <!-- Preset Selector -->
+      <section class="section-container">
+        <span class="section-title">Privacy Preset</span>
+        <div class="preset-selector">
+          <button class="preset-tab active" data-preset="standard">Standard</button>
+          <button class="preset-tab" data-preset="media">Strict Media</button>
+          <button class="preset-tab" data-preset="compliance">Compliance</button>
+        </div>
+      </section>
+
+      <!-- Risk Breakdown Pillars -->
+      <section class="section-container">
+        <span class="section-title">Risk Categories</span>
+        <div class="pillars-grid">
+          <div class="pillar-card">
+            <div class="pillar-header">
+              <span class="pillar-name">Media & Identity</span>
+              <span id="count-media" class="pillar-count">0</span>
+            </div>
+            <div class="pillar-bar-track">
+              <div id="bar-media" class="pillar-bar" style="width: 0%;"></div>
+            </div>
+          </div>
+          <div class="pillar-card">
+            <div class="pillar-header">
+              <span class="pillar-name">Data Sale & Ads</span>
+              <span id="count-data" class="pillar-count">0</span>
+            </div>
+            <div class="pillar-bar-track">
+              <div id="bar-data" class="pillar-bar" style="width: 0%;"></div>
+            </div>
+          </div>
+          <div class="pillar-card">
+            <div class="pillar-header">
+              <span class="pillar-name">Financial Traps</span>
+              <span id="count-financial" class="pillar-count">0</span>
+            </div>
+            <div class="pillar-bar-track">
+              <div id="bar-financial" class="pillar-bar" style="width: 0%;"></div>
+            </div>
+          </div>
+          <div class="pillar-card">
+            <div class="pillar-header">
+              <span class="pillar-name">User Rights Friction</span>
+              <span id="count-rights" class="pillar-count">0</span>
+            </div>
+            <div class="pillar-bar-track">
+              <div id="bar-rights" class="pillar-bar" style="width: 0%;"></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Risk Clauses List -->
+      <section class="section-container">
+        <div class="section-header-flex">
+          <span class="section-title">Detected Hazardous Clauses</span>
+          <span id="total-clauses-count" class="badge-count">0 found</span>
+        </div>
+        <div id="clauses-list" class="clauses-list">
+          <div class="empty-state">
+            <span>No clauses detected. Run scan to evaluate page text.</span>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <!-- Action Footer -->
+    <footer id="app-footer" class="app-footer">
+      <button id="scan-btn" class="btn primary-btn full-width">
+        <svg id="scan-spinner" class="spinner-icon hidden" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M21 12a9 9 0 1 1-6.219-8.56"/>
+        </svg>
+        <span id="scan-btn-text">Re-Scan Current Page</span>
+      </button>
+    </footer>
+  </div>
+
+  <script src="popup.js"></script>
+</body>
+</html>
