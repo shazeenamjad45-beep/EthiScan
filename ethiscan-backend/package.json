@@ -1,0 +1,10 @@
+{
+  "name": "ethiscan-backend",
+  "version": "1.0.0",
+  "description": "Stateless Vercel Serverless Proxy for EthiScan Chrome Extension AI Risk Evaluation",
+  "main": "api/analyze.js",
+  "scripts": {
+    "start": "vercel dev"
+  },
+  "dependencies": {}
+}
